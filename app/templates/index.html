@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f7f2"><title>Payroll AI · Finance workspace</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#overview" aria-label="Payroll workspace home"><span class="brand-mark">p</span><span>Payroll<span class="brand-light"> · finance workspace</span></span></a>
+    <div class="topbar-right"><span class="environment"><i></i> Demo workspace</span><span class="avatar" title="Finance team">FT</span></div>
+  </header>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Workspace navigation">
+      <div class="workspace-label">WORKSPACE</div>
+      <nav>
+        <a class="nav-link active" href="#overview"><span class="nav-icon">⌂</span>Overview</a>
+        <div class="nav-caption">PAYROLL</div>
+        <a class="nav-link" href="#people"><span class="nav-icon">♙</span>People & data <span id="navEmpCount" class="nav-count">0</span></a>
+        <a class="nav-link" href="#company-rules"><span class="nav-icon">⚙</span>Company rules</a>
+        <a class="nav-link" href="#payroll-run"><span class="nav-icon">▤</span>Run payroll</a>
+        <a class="nav-link" href="#history"><span class="nav-icon">◷</span>Run history</a>
+      </nav>
+      <div class="sidebar-note"><span class="shield">✓</span><b>Your payroll, clearly explained</b><p>Review every calculation and approve each run with confidence.</p></div>
+      <div class="sidebar-foot">PAYROLL WORKSPACE <span>v2</span></div>
+    </aside>
+    <main class="content">
+      <section id="overview" class="welcome">
+        <div class="eyebrow">FINANCE WORKSPACE <span> / </span> OVERVIEW</div>
+        <div class="welcome-row"><div><h1>Good work starts with clarity.</h1><p>Bring your people data together, check your company rules, then run payroll with a clear audit trail.</p></div><button class="button button-secondary" onclick="post('/api/demo').then(refresh).catch(e=>alert(e.message))"><span>✦</span> Load sample data</button></div>
+      </section>
+      <section class="summary-grid" aria-label="Payroll workspace summary">
+        <article class="summary-card"><div class="summary-label">PEOPLE IN WORKSPACE</div><div id="summaryEmployees" class="summary-value">—</div><div class="summary-foot">Employee records ready for payroll</div><span class="summary-icon green">♙</span></article>
+        <article class="summary-card"><div class="summary-label">PAYROLL RUNS</div><div id="summaryRuns" class="summary-value">—</div><div class="summary-foot">Runs saved in your workspace</div><span class="summary-icon lilac">▤</span></article>
+        <article class="summary-card"><div class="summary-label">NEXT STEP</div><div id="summaryNext" class="summary-value next-value">Add people</div><div id="summaryNextHint" class="summary-foot">Import a spreadsheet to get started</div><span class="summary-icon peach">↗</span></article>
+      </section>
+      <section class="panel journey">
+        <div class="section-heading"><div><div class="eyebrow">YOUR PAYROLL CHECKLIST</div><h2>Four simple steps to payday</h2></div><span class="soft-tag">You’re in control at every step</span></div>
+        <div class="steps"><a href="#people" class="step"><span class="step-number">1</span><span><b>Add your people</b><small>Connect HR or import a file</small></span><span class="step-arrow">↗</span></a><span class="step-connector"></span><a href="#company-rules" class="step"><span class="step-number">2</span><span><b>Set company rules</b><small>Confirm how payroll works</small></span><span class="step-arrow">↗</span></a><span class="step-connector"></span><a href="#payroll-run" class="step"><span class="step-number">3</span><span><b>Calculate payroll</b><small>Review every payslip detail</small></span><span class="step-arrow">↗</span></a><span class="step-connector"></span><a href="#history" class="step"><span class="step-number">4</span><span><b>Approve & export</b><small>Finish with a clear record</small></span><span class="step-arrow">↗</span></a></div>
+      </section>
+      <section id="people" class="panel main-section">
+        <div class="section-heading"><div><div class="eyebrow">STEP 01 <span>·</span> PEOPLE & DATA</div><h2>Bring in your employee data</h2><p class="section-intro">Choose the way that works for your team. You can review your records below before calculating payroll.</p></div><span class="section-badge" id="peopleBadge">No data yet</span></div>
+        <div class="source-grid">
+          <div class="source-card"><div class="source-top"><span class="source-icon">↗</span><div><h3>Connect to Horilla</h3><p>Read visible employee tables from your HR workspace.</p></div></div><label for="url">Horilla page address</label><input id="url" value="http://localhost:8000/dashboard/" autocomplete="url"><div class="actions"><button onclick="openHorilla()">Open Horilla browser</button><button class="button-secondary" onclick="capture()">Capture page</button></div><p class="field-help">A browser window opens so you can sign in and navigate to the employee or payroll table. Check captured fields before importing.</p><details class="output-details"><summary>Captured page details</summary><pre id="horillaResult">No page captured yet.</pre></details></div>
+          <div class="source-card"><div class="source-top"><span class="source-icon file-icon">⇧</span><div><h3>Import a spreadsheet</h3><p>Upload an employee CSV or Excel file to get started.</p></div></div><label for="file">Choose a file</label><input type="file" id="file" accept=".csv,.xlsx"><p class="field-help">Required: employee_code, employee_name, basic. Optional: state, hra, allowances, unpaid_leave_days, tds, other_deductions.</p><button onclick="upload()">Import employee file</button></div>
+        </div>
+        <div class="data-heading"><div><h3>Your people</h3><p>Review employee details used in payroll calculations.</p></div><span id="empCount" class="muted">0 records</span></div>
+        <div class="tablewrap"><table id="employees"><thead><tr><th>EMPLOYEE</th><th>CODE</th><th>STATE</th><th>BASIC PAY</th><th>HRA</th><th>ALLOWANCE</th><th>UNPAID LEAVE</th><th>SOURCE</th></tr></thead><tbody></tbody></table><div id="emptyEmployees" class="empty-state">Your employee records will appear here after you import a file or load sample data.</div></div>
+      </section>
+      <section id="company-rules" class="panel main-section">
+        <div class="section-heading"><div><div class="eyebrow">STEP 02 <span>·</span> COMPANY RULES</div><h2>Set the rules for your team</h2><p class="section-intro">These choices are saved with an effective date, so every payroll run uses the right policy for that month.</p></div></div>
+        <div class="rules-layout"><div class="rules-form"><div class="field-row"><div><label for="lop">Unpaid leave calculation</label><select id="lop"><option value="calendar_days">Actual days in the month</option><option value="30_days">Fixed 30 days</option><option value="26_working_days">26 working days</option></select><span class="field-help">Sets the number of days used to calculate a leave deduction.</span></div><div><label for="pf">Provident fund (PF) basis</label><select id="pf"><option value="capped_basic">Basic pay, capped at ₹15,000</option><option value="full_basic">Full basic pay</option></select><span class="field-help">Sets the salary amount used to calculate PF.</span></div></div><label for="effective">Apply these choices from</label><input id="effective" type="month" value="2026-07"><button onclick="saveChoices()">Save company rules</button></div><div class="rule-history"><h3>Rule history</h3><p>Previously saved, effective-dated choices.</p><div id="rules" class="compact">No rules saved yet.</div></div></div>
+        <details class="proposal-details"><summary>Suggest a rule change in plain English</summary><div class="proposal-content"><p class="field-help">Describe a change and its start month. Review the suggestion before applying it.</p><textarea id="instruction" placeholder="For example: Use 30 days for unpaid leave starting July 2026"></textarea><div class="proposal-controls"><div><label for="proposalDate">Effective from</label><input id="proposalDate" type="month" value="2026-07"></div><button onclick="propose()">Review suggestion</button></div><pre id="proposalResult">Your suggestion will appear here for review.</pre></div></details>
+      </section>
+      <section id="payroll-run" class="panel main-section run-section">
+        <div class="section-heading"><div><div class="eyebrow">STEP 03 <span>·</span> CALCULATE</div><h2>Prepare a payroll run</h2><p class="section-intro">Create a draft for a month, then review the totals and each employee’s calculation.</p></div></div>
+        <div class="calculate-row"><div><label for="month">Payroll month</label><input id="month" type="month" value="2026-07"></div><button onclick="calculate()">Calculate draft payroll <span>→</span></button></div><div id="runResult" class="run-result"></div>
+      </section>
+      <section id="history" class="panel main-section history-section">
+        <div class="section-heading"><div><div class="eyebrow">STEP 04 <span>·</span> APPROVAL & EXPORT</div><h2>Review run history</h2><p class="section-intro">Submit a draft for checking, approve it, and download the reports your team needs.</p></div><span class="approval-note">Maker & checker workflow</span></div>
+        <div class="workflow-note"><span>i</span><p>Payroll runs and approvals are saved in this demo workspace. The person who prepares a run submits it; a checker approves it before exports become available.</p></div><div id="runs" class="runs-list"><div class="empty-state">No payroll runs yet. Calculate your first draft above.</div></div><div id="detail"></div>
+      </section>
+      <footer><span class="brand-mark small-mark">p</span><span>Payroll AI workspace</span><span class="footer-spacer"></span><span>Demo only · Synthetic employee data · No payments initiated</span></footer>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
